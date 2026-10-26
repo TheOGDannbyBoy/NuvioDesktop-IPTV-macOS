@@ -10,11 +10,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.unit.dp
@@ -23,6 +26,7 @@ import com.nuvio.app.core.diagnostics.SentryInitializer
 import com.nuvio.app.core.ui.NuvioTheme
 import com.nuvio.app.core.ui.ProvideDesktopWindowInsets
 import com.nuvio.app.features.discordrpc.DiscordPresenceManager
+import com.nuvio.app.features.iptv.IptvDesktopScreen
 import com.nuvio.app.features.p2p.P2pStreamingEngine
 import com.nuvio.app.features.plugins.configureDesktopQuickJsLibrary
 import com.nuvio.app.features.player.PlatformPlayerSurface
@@ -72,6 +76,7 @@ fun main(args: Array<String>) {
 
     application {
         val appIconState by AppIconRepository.state.collectAsState()
+        var liveTvOpen by remember { mutableStateOf(false) }
         val smokePlayerUrl = (
             System.getProperty("nuvio.desktop.smokePlayerUrl")
                 ?: System.getenv("NUVIO_DESKTOP_SMOKE_PLAYER_URL")
@@ -128,11 +133,16 @@ fun main(args: Array<String>) {
                 SentryInitializer.close()
                 exitApplication()
             },
-            title = if (smokePlayerUrl == null) "Nuvio" else "Nuvio Player Smoke",
+            title = if (smokePlayerUrl == null) "Nuvio + IPTV" else "Nuvio Player Smoke",
             state = windowState,
             icon = painterResource(appIconState.selected.transparentPreviewResource),
             init = ::configureMacosWindowBeforePeer,
         ) {
+            MenuBar {
+                Menu("IPTV") {
+                    Item(if (liveTvOpen) "Back to Nuvio" else "Open Live TV", onClick = { liveTvOpen = !liveTvOpen })
+                }
+            }
             SideEffect {
                 window.background = NuvioDesktopNativeBackground
                 window.rootPane.background = NuvioDesktopNativeBackground
@@ -215,7 +225,10 @@ fun main(args: Array<String>) {
 
             if (smokePlayerUrl == null) {
                 ProvideDesktopWindowInsets(isFullscreen = windowState.placement == WindowPlacement.Fullscreen) {
-                    MiddleClickAutoscroll { App() }
+                    MiddleClickAutoscroll {
+                        if (liveTvOpen) NuvioTheme { IptvDesktopScreen(onBack = { liveTvOpen = false }) }
+                        else App()
+                    }
                 }
             } else {
                 // The player surface reads LocalNuvioPlatformDensity, which only
@@ -281,5 +294,6 @@ private fun handleDesktopLaunchArgs(args: Array<String>) {
 }
 
 private fun isDesktopAppUrl(value: String): Boolean =
+    value.startsWith("nuvioiptv://", ignoreCase = true) ||
     value.startsWith("nuvio://", ignoreCase = true) ||
         value.startsWith("stremio://", ignoreCase = true)
