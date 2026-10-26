@@ -6,11 +6,11 @@ This is an experimental macOS fork of [Nuvio Desktop](https://github.com/NuvioMe
 
 - Add more than one M3U playlist or Xtream live TV account.
 - Load XMLTV guides from a URL, the playlist header, or Xtream's XMLTV endpoint.
-- Browse groups, search channels, see guide listings, and play channels with Nuvio Desktop's macOS player.
+- Open **Live TV** from the desktop sidebar (or top navigation), browse groups, search channels, see guide listings, and play channels with Nuvio Desktop's macOS player.
 - Use M3U request headers and common catch-up URL formats for replay and watch-from-start.
 - Save sources in `~/Library/Application Support/Nuvio IPTV/sources.json` with owner-only file permissions. Provider credentials in this file are **not encrypted**. Anyone with access to your macOS user account can read them.
 
-Open the **IPTV** menu in the macOS menu bar, then **Open Live TV**. The button at the top left returns to Nuvio.
+The macOS **IPTV** menu also has an **Open Live TV** shortcut. Use the sidebar to move between Live TV and Nuvio's other sections, or use the back button in Live TV.
 
 ## Current limits
 

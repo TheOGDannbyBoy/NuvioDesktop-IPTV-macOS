@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -82,6 +83,12 @@ internal fun MainTabsDestination(
     onAddProfileRequested: () -> Unit,
 ) {
     PlatformBackHandler(enabled = rootRouteActive && !isDesktop, onBack = onBack)
+    val liveTvNavigation = LocalDesktopLiveTvNavigation.current
+    val liveTvOpen = isDesktop && liveTvNavigation?.isOpen == true
+    val selectMainTab: (AppScreenTab) -> Unit = { tab ->
+        liveTvNavigation?.close?.invoke()
+        onTabSelected(tab)
+    }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = maxWidth
@@ -141,32 +148,40 @@ internal fun MainTabsDestination(
         }
         val navBarGlowEnabled by ThemeSettingsRepository.navBarGlowEnabled.collectAsStateWithLifecycle()
         var isTopProfileSwitcherOpen by remember { mutableStateOf(false) }
-        val floatingNavigationItems = listOf(
+        val floatingNavigationItems = listOfNotNull(
             FloatingNavigationItem(
-                selected = selectedTab == AppScreenTab.Home,
-                onClick = { onTabSelected(AppScreenTab.Home) },
+                selected = !liveTvOpen && selectedTab == AppScreenTab.Home,
+                onClick = { selectMainTab(AppScreenTab.Home) },
                 icon = Icons.Filled.Home,
                 label = stringResource(Res.string.compose_nav_home),
             ),
             FloatingNavigationItem(
-                selected = selectedTab == AppScreenTab.Search,
-                onClick = { onTabSelected(AppScreenTab.Search) },
+                selected = !liveTvOpen && selectedTab == AppScreenTab.Search,
+                onClick = { selectMainTab(AppScreenTab.Search) },
                 drawable = Res.drawable.sidebar_search,
                 label = stringResource(Res.string.compose_nav_search),
             ),
             FloatingNavigationItem(
-                selected = selectedTab == AppScreenTab.Library,
-                onClick = { onTabSelected(AppScreenTab.Library) },
+                selected = !liveTvOpen && selectedTab == AppScreenTab.Library,
+                onClick = { selectMainTab(AppScreenTab.Library) },
                 drawable = Res.drawable.sidebar_library,
                 label = stringResource(Res.string.compose_nav_library),
             ),
+            if (isDesktop && liveTvNavigation != null) {
+                FloatingNavigationItem(
+                    selected = liveTvOpen,
+                    onClick = liveTvNavigation.open,
+                    icon = Icons.Filled.Tv,
+                    label = "Live TV",
+                )
+            } else null,
             FloatingNavigationItem(
-                selected = selectedTab == AppScreenTab.Settings,
-                onClick = { onTabSelected(AppScreenTab.Settings) },
+                selected = !liveTvOpen && selectedTab == AppScreenTab.Settings,
+                onClick = { selectMainTab(AppScreenTab.Settings) },
                 label = stringResource(if (isDesktop) Res.string.compose_nav_settings else Res.string.compose_nav_profile),
                 content = { onClick ->
                     ProfileSwitcherTab(
-                        selected = selectedTab == AppScreenTab.Settings,
+                        selected = !liveTvOpen && selectedTab == AppScreenTab.Settings,
                         onClick = onClick,
                         onProfileSelected = onProfileSelected,
                         onAddProfileRequested = onAddProfileRequested,
@@ -238,27 +253,35 @@ internal fun MainTabsDestination(
                     LocalNuvioBottomNavigationOverlayPadding provides if (useNativeBottomTabs) 49.dp else if (!isDesktop && !isTabletLayout && navBarStyleSetting != NavBarStyle.CLASSIC) 72.dp else 0.dp,
                     LocalNuvioNavBarScrollState provides navBarScrollState,
                 ) {
-                    AppTabHost(
-                        selectedTab = selectedTab,
-                        requests = requests,
-                        state = state.copy(
-                            tabsRouteActiveState = tabsRouteActiveState,
-                            topChromePadding = topChromePadding,
-                        ),
-                        actions = tabActions,
-                        modifier = Modifier
+                    val mainContentModifier = Modifier
                             .fillMaxSize()
                             .then(if (requiresNavBarHaze) Modifier.hazeSource(state = navBarHazeState) else Modifier)
                             .then(if (shouldAttachNestedScroll) Modifier.nestedScroll(navBarScrollState.nestedScrollConnection) else Modifier)
                             .padding(innerPadding)
-                            .padding(start = contentStartPadding),
-                    )
+                            .padding(start = contentStartPadding)
+                    if (liveTvOpen) {
+                        Box(modifier = mainContentModifier) { liveTvNavigation?.content?.invoke() }
+                    } else {
+                        AppTabHost(
+                            selectedTab = selectedTab,
+                            requests = requests,
+                            state = state.copy(
+                                tabsRouteActiveState = tabsRouteActiveState,
+                                topChromePadding = topChromePadding,
+                            ),
+                            actions = tabActions,
+                            modifier = mainContentModifier,
+                        )
+                    }
                 }
 
                 if (useDesktopSidebar) {
                     DesktopHoverSidebar(
                         selectedTab = selectedTab,
-                        onTabSelected = onTabSelected,
+                        onTabSelected = selectMainTab,
+                        liveTvAvailable = liveTvNavigation != null,
+                        liveTvSelected = liveTvOpen,
+                        onLiveTvSelected = { liveTvNavigation?.open?.invoke() },
                         onProfileSelected = onProfileSelected,
                         onAddProfileRequested = onAddProfileRequested,
                         sidebarExpanded = isSidebarExpanded,

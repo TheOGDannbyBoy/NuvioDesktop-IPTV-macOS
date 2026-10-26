@@ -5,6 +5,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.awt.SwingWindow
 import androidx.compose.ui.configureSwingGlobalsForCompose
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -226,8 +227,16 @@ fun main(args: Array<String>) {
             if (smokePlayerUrl == null) {
                 ProvideDesktopWindowInsets(isFullscreen = windowState.placement == WindowPlacement.Fullscreen) {
                     MiddleClickAutoscroll {
-                        if (liveTvOpen) NuvioTheme { IptvDesktopScreen(onBack = { liveTvOpen = false }) }
-                        else App()
+                        CompositionLocalProvider(
+                            LocalDesktopLiveTvNavigation provides DesktopLiveTvNavigation(
+                                isOpen = liveTvOpen,
+                                open = { liveTvOpen = true },
+                                close = { liveTvOpen = false },
+                                content = { IptvDesktopScreen(onBack = { liveTvOpen = false }) },
+                            ),
+                        ) {
+                            App()
+                        }
                     }
                 }
             } else {

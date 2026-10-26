@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -721,6 +722,9 @@ internal fun AppLaunchOverlay(
 internal fun DesktopHoverSidebar(
     selectedTab: AppScreenTab,
     onTabSelected: (AppScreenTab) -> Unit,
+    liveTvAvailable: Boolean,
+    liveTvSelected: Boolean,
+    onLiveTvSelected: () -> Unit,
     onProfileSelected: (NuvioProfile) -> Unit,
     onAddProfileRequested: () -> Unit,
     sidebarExpanded: Boolean = false,
@@ -768,7 +772,7 @@ internal fun DesktopHoverSidebar(
             } else {
                 0.dp
             }
-            val navColumnHeight = DesktopSidebarItemHeight * AppScreenTab.entries.size
+            val navColumnHeight = DesktopSidebarItemHeight * (AppScreenTab.entries.size + if (liveTvAvailable) 1 else 0)
             val centeredNavTop = ((maxHeight - navColumnHeight) / 2).coerceAtLeast(0.dp)
             val availableNavOffset = (maxHeight - navColumnHeight - centeredNavTop).coerceAtLeast(0.dp)
             val navColumnOffset = (minNavTop - centeredNavTop)
@@ -823,7 +827,7 @@ internal fun DesktopHoverSidebar(
             ) {
                 DesktopSidebarItem(
                     label = stringResource(Res.string.compose_nav_home),
-                    selected = selectedTab == AppScreenTab.Home,
+                    selected = !liveTvSelected && selectedTab == AppScreenTab.Home,
                     expanded = sidebarExpanded,
                     onClick = { selectTab(AppScreenTab.Home) },
                 ) { color ->
@@ -836,7 +840,7 @@ internal fun DesktopHoverSidebar(
                 }
                 DesktopSidebarItem(
                     label = stringResource(Res.string.compose_nav_search),
-                    selected = selectedTab == AppScreenTab.Search,
+                    selected = !liveTvSelected && selectedTab == AppScreenTab.Search,
                     expanded = sidebarExpanded,
                     onClick = { selectTab(AppScreenTab.Search) },
                 ) { color ->
@@ -849,7 +853,7 @@ internal fun DesktopHoverSidebar(
                 }
                 DesktopSidebarItem(
                     label = stringResource(Res.string.compose_nav_library),
-                    selected = selectedTab == AppScreenTab.Library,
+                    selected = !liveTvSelected && selectedTab == AppScreenTab.Library,
                     expanded = sidebarExpanded,
                     onClick = { selectTab(AppScreenTab.Library) },
                 ) { color ->
@@ -860,9 +864,27 @@ internal fun DesktopHoverSidebar(
                         tint = color,
                     )
                 }
+                if (liveTvAvailable) {
+                    DesktopSidebarItem(
+                        label = "Live TV",
+                        selected = liveTvSelected,
+                        expanded = sidebarExpanded,
+                        onClick = {
+                            onProfileStackVisibleChange(false)
+                            onLiveTvSelected()
+                        },
+                    ) { color ->
+                        Icon(
+                            imageVector = Icons.Filled.Tv,
+                            contentDescription = "Live TV",
+                            modifier = Modifier.size(DesktopSidebarIconSize),
+                            tint = color,
+                        )
+                    }
+                }
                 DesktopSidebarItem(
                     label = stringResource(Res.string.compose_settings_page_root),
-                    selected = selectedTab == AppScreenTab.Settings,
+                    selected = !liveTvSelected && selectedTab == AppScreenTab.Settings,
                     expanded = sidebarExpanded,
                     onClick = { selectTab(AppScreenTab.Settings) },
                 ) { color ->
