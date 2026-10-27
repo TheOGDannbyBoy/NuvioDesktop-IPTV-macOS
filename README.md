@@ -10,7 +10,7 @@ Download the macOS arm64 DMG from this fork's **Releases** tab, open it, and dra
 
 ## Status
 
-This is an **alpha test build**. M3U and Xtream live playlists, XMLTV guides, channel browsing, playback through the desktop player, and common catch-up formats are implemented. Playback has not been verified with a real IPTV provider. Sports, recordings, Xtream VOD, and channel editing from the Android TV fork are not ported. IPTV provider credentials are saved locally with owner-only file permissions but without encryption.
+This is an **alpha test build**. M3U and Xtream live playlists, XMLTV guides, channel browsing, playback through the desktop player, and common catch-up formats are implemented. The user has confirmed their IPTV works in this build; compatibility with other providers remains unverified. Sports, recordings, Xtream VOD, and channel editing from the Android TV fork are not ported. IPTV provider credentials are saved locally with owner-only file permissions but without encryption.
 
 See [macOS IPTV details and build instructions](MACOS-IPTV.md) for the full feature list and current limits. The [original Nuvio Desktop README](UPSTREAM-README.md) is retained for upstream context.
 

@@ -14,7 +14,7 @@ The macOS **IPTV** menu also has an **Open Live TV** shortcut. Use the sidebar t
 
 ## Current limits
 
-This build is not feature-for-feature parity with the Android TV fork. Its Sports hub, recordings, Xtream VOD library, channel editing, and TV remote interface have not been ported. DRM playback depends on the desktop player and has not been verified. Live TV playback has not been verified against a real provider; test with a source you are authorized to use.
+This build is not feature-for-feature parity with the Android TV fork. Its Sports hub, recordings, Xtream VOD library, channel editing, and TV remote interface have not been ported. DRM playback depends on the desktop player and has not been verified. The user has confirmed their IPTV works in this build; other providers remain unverified. Test with a source you are authorized to use.
 
 The DMG is for Apple Silicon (arm64) Macs. The app is unsigned and not notarized. macOS may require you to approve it in Privacy & Security. Do not replace your official Nuvio app with this build.
 
