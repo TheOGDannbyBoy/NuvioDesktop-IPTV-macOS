@@ -1,6 +1,6 @@
 # Nuvio + IPTV for macOS
 
-This is an experimental macOS fork of [Nuvio Desktop](https://github.com/NuvioMedia/NuvioDesktop) with a Live TV section adapted from [Nuvio + IPTV](https://github.com/homelessbrian/NuvioPlusIPTV). It is separate from the official `Nuvio.app`: the bundle ID, app data, cache, and URL scheme are distinct.
+This Apple silicon macOS build combines [Nuvio Desktop](https://github.com/NuvioMedia/NuvioDesktop) with a Live TV section adapted from [Nuvio + IPTV](https://github.com/homelessbrian/NuvioPlusIPTV). IPTV playback has been confirmed in this build. It installs separately from the original `Nuvio.app`, with its own bundle ID, app data, cache, and URL scheme.
 
 ## Current features
 
