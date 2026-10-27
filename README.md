@@ -1,12 +1,18 @@
 # Nuvio IPTV for macOS
 
+## Download for Mac
+
+### [⬇️ Download Nuvio + IPTV for Apple silicon (.dmg)](https://github.com/TheOGDannbyBoy/NuvioDesktop-IPTV-macOS/releases/download/macos-iptv-0.1.33-alpha/Nuvio-IPTV-macOS-arm64-0.1.33-alpha.dmg)
+
+**Current version:** 0.1.33-alpha · **Macs:** Apple silicon (arm64) only. [Release notes and checksums](https://github.com/TheOGDannbyBoy/NuvioDesktop-IPTV-macOS/releases/tag/macos-iptv-0.1.33-alpha)
+
 An **unofficial, experimental** Apple Silicon macOS fork of [Nuvio Desktop](https://github.com/NuvioMedia/NuvioDesktop). It adds a Live TV section using selected M3U and catch-up code adapted from [Nuvio + IPTV](https://github.com/homelessbrian/NuvioPlusIPTV). Neither upstream project endorses this build.
 
 The app installs as **Nuvio IPTV**, with a separate bundle ID and local data folder from the official Nuvio app. It does not include channels, playlists, or media.
 
 ## Install
 
-Download the macOS arm64 DMG from this fork's **Releases** tab, open it, and drag `Nuvio IPTV.app` into Applications. Open the app and select **Live TV** in the sidebar to add your own M3U playlist or Xtream live TV account. The app is unsigned and not notarized; only run a build from a source you trust.
+Download the DMG using the link above, open it, and drag `Nuvio IPTV.app` into Applications. Open the app and select **Live TV** in the sidebar to add your own M3U playlist or Xtream live TV account. The app is unsigned and not notarized; only run a build from a source you trust.
 
 ## Status
 
